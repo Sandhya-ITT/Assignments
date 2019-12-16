@@ -27,8 +27,5 @@ namespace Library
                 + BookAuthor
                 + " " + BookCategory;
         }
-
     }
-
-
 }

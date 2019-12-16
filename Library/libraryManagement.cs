@@ -1,13 +1,75 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 
 namespace Library
 {
     class Details
     {
         Book[] arr = new Book[10];
+        string fileName = @"C:\Users\sandhya.e\Desktop\Examplefile.txt";
+
+        public long CountNumberOfLinesInTheFile()
+        {
+            var lineCounter = 0;
+            using (var reader = new StreamReader(fileName))
+            {
+                while (reader.ReadLine() != null)
+                {
+                    lineCounter++;
+                    Console.WriteLine();
+                }
+                Console.WriteLine(lineCounter);
+                return lineCounter;
+            }
+        }
+
+        public void GetTheLastLineFromTheFile()
+        {
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\sandhya.e\Desktop\Examplefile.txt");
+            while ((line = file.ReadLine()) != null)
+            {
+                string lastWord = line.Split(' ').Last();
+            }
+
+            file.Close();
+
+        }
+
+        public void createfile()
+        {
+            try
+            {
+                if (!File.Exists(fileName))
+                {
+                    FileStream fs = File.Create(fileName);
+
+                }
+            }
+            catch (IOException e)
+            {
+
+                Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        public void Writeoperation(Book info)
+        {
+            try
+            {
+                StreamWriter sw = File.AppendText(fileName);
+                sw.WriteLine(info);
+                sw.Close();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
 
         //To add the book
-        public void AddBook()
+        public Book AddBook()
         {
             Book book = new Book();
 
@@ -18,86 +80,39 @@ namespace Library
             Console.Write("Enter the category:");
             book.BookCategory = Console.ReadLine();
 
-            for (int i = 1; i < arr.Length; i++)
-            {
-                if (arr[i] == null)
-                {
-                    arr[i] = book;
-                    break;
-                }
-            }
+            this.Writeoperation(book);
+            return book;
 
         }
 
         //To delete the book
         public void DeleteBook()
         {
-
-            Console.WriteLine("Enter the BookCategory you wanted to delete");
-            string DeletedInfo = Console.ReadLine();
-
-            for (int i = 0; i < arr.Length; i++)
+            Console.WriteLine("Are you sure you want to delete the file Y/N");
+            string DeleteFile = Console.ReadLine();
+            if(DeleteFile == "yes" || DeleteFile == "Y")  
             {
-
-                if (arr[i] != null)
-                {
-                    if (arr[i].BookName == DeletedInfo)
-                    {
-                        Console.WriteLine("book details matched and deleted: {0}", arr[i]);
-                        arr[i] = null;
-                        break;
-                    }
-
-                }
-                else if (arr.Length == (i + 1))
-                {
-                    Console.WriteLine("No book matched!!: {0} ", DeletedInfo);
-                }
-
-            }
-
-
-        }
-
-        //To update the book
-        public void UpdateBook()
-        {
-            Book book = new Book();
-
-            Console.WriteLine("Enter the Details to be updated ");
-            string UpdatedInfo = Console.ReadLine();
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if (arr[i] != null)
-                {
-                    if (arr[i].BookName == UpdatedInfo)
-                    {
-                        Console.WriteLine(" Enter Book Name:");
-                        book.BookName = Console.ReadLine();
-                        Console.WriteLine(" Enter Author Name:");
-                        book.BookAuthor = Console.ReadLine();
-                        Console.WriteLine(" Enter Book Category:");
-                        book.BookCategory = Console.ReadLine();
-                        Console.WriteLine("Successfully updated!!!");
-                        Console.WriteLine(arr[i] = book);
-                        break;
-                    }
-                }
-                else if (arr.Length == (i + 1))
-                {
-                    Console.WriteLine("No book matched with Book Category!!!: {0} ", UpdatedInfo);
-                }
+                File.Delete(fileName);
             }
         }
 
-        //To display the details
+//To display the details
         public void GetDetails()
         {
-            for (int i = 0; i < arr.Length; i++)
+            try
             {
-                if (arr[i] != null)
-                    Console.WriteLine(arr[i]);
+                using (StreamReader sr = File.OpenText(fileName))
+                {
+                    string stringHolder = "";
+                    while ((stringHolder = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(stringHolder);
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.StackTrace);
             }
         }
     }
